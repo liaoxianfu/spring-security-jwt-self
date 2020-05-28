@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liao.spring.security.jwt.mapper.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.liao.spring.security.jwt.domain.Menu">
+        <!--@mbg.generated-->
+        <!--@Table sys_menu-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="menu_pid" jdbcType="INTEGER" property="menuPid"/>
+        <result column="menu_pids" jdbcType="VARCHAR" property="menuPids"/>
+        <result column="is_leaf" jdbcType="TINYINT" property="isLeaf"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, menu_name, url, menu_pid, menu_pids, is_leaf, `status`
+    </sql>
+    <select id="getMenuByRoleId" resultType="java.lang.String">
+        select url
+        from sys_menu
+                 join sys_role_menu on sys_menu.id = sys_role_menu.menu_id
+                 join sys_role sr on sys_role_menu.role_id = sr.id
+        where sr.id = #{roleId}
+    </select>
+    <select id="getMenuUrlsByRoleCodes" resultType="java.lang.String">
+        select url
+        from sys_menu sm
+        join sys_role_menu srm on sm.id = srm.menu_id
+        join sys_role sr on srm.role_id = sr.id
+        where sr.role_code in
+        <foreach collection="roles" item="role" open="(" close=")"
+                 separator=",">
+            #{role}
+        </foreach>
+    </select>
+
+</mapper>

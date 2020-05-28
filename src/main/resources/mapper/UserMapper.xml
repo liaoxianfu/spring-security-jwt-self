@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liao.spring.security.jwt.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.liao.spring.security.jwt.domain.User">
+        <!--@mbg.generated-->
+        <!--@Table sys_user-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="create_datetime" jdbcType="TIMESTAMP" property="createDatetime"/>
+        <result column="org_id" jdbcType="INTEGER" property="orgId"/>
+        <result column="enable" jdbcType="TINYINT" property="enable"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, username, `password`, create_datetime, org_id, `enable`
+    </sql>
+    <select id="getUserDetailsByUsername" resultType="com.liao.spring.security.jwt.config.JwtUserDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where username = #{username,jdbcType=VARCHAR}
+    </select>
+    <select id="getUrlsByUsername" resultType="java.lang.String">
+        select url
+        from sys_menu
+                 join sys_role_menu srm on sys_menu.id = srm.menu_id
+                 join sys_role sr on srm.role_id = sr.id
+                 join sys_role_user sru on srm.role_id = sru.role_id
+                 join sys_user su on sru.user_id = su.id
+        where username = #{username,jdbcType=VARCHAR};
+    </select>
+
+</mapper>
