@@ -12,6 +12,6 @@
 默认提供了两用户 `admin` `demo` 密码均为`123456`
 
 使用postman进行测试
-![postman 测试](src/main/resource/img/login.png)
-<img src="src/main/resource/img/login.png"/>
+![postman 测试](https://github.com/liaoxianfu/spring-security-jwt-self/blob/master/src/main/resources/img/login.png)
+
 
