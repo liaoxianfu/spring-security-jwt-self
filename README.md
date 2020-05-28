@@ -7,4 +7,11 @@
 
 运行项目即可
 
+## 测试
+
+默认提供了两用户 `admin` `demo` 密码均为`123456`
+
+使用postman进行测试
+![postman 测试](src/main/resource/img/login.png)
+<img src="src/main/resource/img/login.png"/>
 
