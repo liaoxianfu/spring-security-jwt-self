@@ -1,6 +1,6 @@
 package com.liao.spring.security.jwt.config;
 
-import com.liao.spring.security.jwt.common.MySuccessHandler;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,8 +26,7 @@ public class JwtAuthConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private PasswordEncoder passwordEncoder;
 
-    @Resource
-    private MySuccessHandler successHandler;
+
 
     @Resource
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;

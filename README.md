@@ -14,4 +14,10 @@
 使用postman进行测试
 ![postman 测试](https://github.com/liaoxianfu/spring-security-jwt-self/blob/master/src/main/resources/img/login.png)
 
+拿到token后，在每次请求的时候需要在header上携带
+jwt-token和 X-XSRF-TOKEN
 
+**注意**
+X-XSRF-TOKEN 需要每次都从cookie中获取
+
+![test](https://github.com/liaoxianfu/spring-security-jwt-self/blob/master/src/main/resources/img/test.png)
