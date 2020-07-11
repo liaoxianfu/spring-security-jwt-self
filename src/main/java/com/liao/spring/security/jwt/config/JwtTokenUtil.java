@@ -37,6 +37,13 @@ public class JwtTokenUtil {
     }
 
 
+    /**
+     * 生成jwt token
+     * @author liao
+     * @param claims {@link Claims}
+     * @return jwt-token
+     *
+     */
     private String generateToken(Claims claims) {
         // 过期时间
         Date expirationDate = new Date(System.currentTimeMillis() + expiration);

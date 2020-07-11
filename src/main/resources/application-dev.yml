@@ -4,6 +4,16 @@ spring:
     username: root
     password: 123456
     url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Shanghai
+  redis:
+    database: 2
+    host: localhost
+    port: 6379
+    timeout: 200s
+    lettuce:
+      pool:
+        max-wait: 60s
+        max-idle: 8
+
 
 jwt:
   secret: qwwewe

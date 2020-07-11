@@ -1,6 +1,5 @@
 package com.liao.spring.security.jwt.config;
 
-import com.liao.spring.security.jwt.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,7 @@ import java.util.List;
 @Component("rbacService")
 public class JwtRbacService {
     @Resource
-    private UserMapper userMapper;
+    private JwtService jwtService;
     public static AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     /**
@@ -37,7 +36,7 @@ public class JwtRbacService {
         String username = userDetails.getUsername();
         String requestUri = request.getRequestURI();
         // 获取该用户能够有权访问的url
-        List<String> urls = userMapper.getUrlsByUsername(username);
+        List<String> urls = jwtService.getUrlsByUsername(username);
         return urls.stream().anyMatch(
                 // 判断以*结尾的url能够访问任意的数据
                 url -> {

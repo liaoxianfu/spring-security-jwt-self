@@ -3,6 +3,8 @@ package com.liao.spring.security.jwt.config;
 import com.liao.spring.security.jwt.mapper.MenuMapper;
 import com.liao.spring.security.jwt.mapper.RoleMapper;
 import com.liao.spring.security.jwt.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
  * @since 2020/5/28 14:33
  */
 @Component
+@Slf4j
 public class JwtUserDetailServiceImpl implements UserDetailsService {
     @Resource
     private UserMapper userMapper;
@@ -26,11 +29,18 @@ public class JwtUserDetailServiceImpl implements UserDetailsService {
     private RoleMapper roleMapper;
     @Resource
     private MenuMapper menuMapper;
+    @Resource
+    RedisTemplate<String, UserDetails> redisTemplate;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+        String key = this.getClass().getName() + "." + username;
+        UserDetails details = redisTemplate.opsForValue().get(key);
+        if (details != null) {
+            log.info("使用缓存");
+            return details;
+        }
 
         // 加载基础权限信息
         JwtUserDetail userDetails = userMapper.getUserDetailsByUsername(username);
@@ -38,7 +48,6 @@ public class JwtUserDetailServiceImpl implements UserDetailsService {
         if (userDetails == null || StringUtils.isEmpty(userDetails.getUsername())) {
             throw new UsernameNotFoundException(String.format("用户%s不存在", username));
         }
-
         // 加载角色信息
         List<String> roles = roleMapper.getRoleCodesByUsername(username);
         List<String> authorities = menuMapper.getMenuUrlsByRoleCodes(roles);
@@ -47,6 +56,7 @@ public class JwtUserDetailServiceImpl implements UserDetailsService {
         // 设置用户权限
         userDetails.setAuthorities(
                 AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", authorities)));
+        redisTemplate.opsForValue().set(key, userDetails);
         // 通过用户角色列表加载资源权限列表
         return userDetails;
     }

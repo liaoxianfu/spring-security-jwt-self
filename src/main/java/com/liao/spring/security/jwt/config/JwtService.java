@@ -1,6 +1,8 @@
 package com.liao.spring.security.jwt.config;
 
+import com.liao.spring.security.jwt.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author liao
@@ -28,6 +31,11 @@ public class JwtService {
 
     @Resource
     JwtTokenUtil jwtTokenUtil;
+
+    @Resource
+    private UserMapper userMapper;
+    @Resource
+    private RedisTemplate<String, List<String>> redisTemplate;
 
     /**
      * 登录认证获取令牌
@@ -53,4 +61,14 @@ public class JwtService {
         return null;
     }
 
+    public List<String> getUrlsByUsername(String username) {
+        String key = this.getClass().getName() + "." + username;
+        List<String> urls = redisTemplate.opsForValue().get(key);
+        if (urls != null && urls.size() > 0) {
+            return urls;
+        }
+        urls = userMapper.getUrlsByUsername(username);
+        redisTemplate.opsForValue().set(key, urls);
+        return urls;
+    }
 }
