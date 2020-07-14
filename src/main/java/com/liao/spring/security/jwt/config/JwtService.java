@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author liao
@@ -36,6 +37,8 @@ public class JwtService {
     private UserMapper userMapper;
     @Resource
     private RedisTemplate<String, List<String>> redisTemplate;
+    @Resource
+    private RedisTemplate<String, Boolean> jwtRedisTemplate;
 
     /**
      * 登录认证获取令牌
@@ -50,19 +53,24 @@ public class JwtService {
             throw new UsernameNotFoundException("登录失败，未找到用户 ");
         }
         UserDetails userDetails = jwtUserDetailService.loadUserByUsername(username);
-        return jwtTokenUtil.generateToken(userDetails);
+        String token = jwtTokenUtil.generateToken(userDetails);
+        // 将token加入进redis中
+        jwtRedisTemplate.opsForValue().set(token, true, jwtTokenUtil.getExpiration(), TimeUnit.MILLISECONDS);
+        return token;
 
     }
 
     public String refreshToken(String oldToken) {
         if (jwtTokenUtil.isTokenNotExpired(oldToken)) {
+            // 将原来的token删除
+            jwtRedisTemplate.delete(oldToken);
             return jwtTokenUtil.refreshToken(oldToken);
         }
         return null;
     }
 
     public List<String> getUrlsByUsername(String username) {
-        String key = this.getClass().getName() + "." + username;
+        String key = this.getClass().getName() + "." + new Exception().getStackTrace()[0].getMethodName() + "." + username;
         List<String> urls = redisTemplate.opsForValue().get(key);
         if (urls != null && urls.size() > 0) {
             return urls;

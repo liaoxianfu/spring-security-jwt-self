@@ -26,6 +26,8 @@ public class JwtAuthConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private PasswordEncoder passwordEncoder;
 
+    @Resource
+    JwtLogoutHandler jwtLogoutHandler;
 
 
     @Resource
@@ -46,10 +48,12 @@ public class JwtAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/*").hasAnyRole("admin")
                 .anyRequest().access("@rbacService.hasPermission(request,authentication)")
                 .and()
+                .logout()
+                .logoutUrl("/logout").logoutSuccessHandler(jwtLogoutHandler)
+                .and()
                 // 不再进行Session存储
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
     }
 
 

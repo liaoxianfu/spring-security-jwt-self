@@ -1,5 +1,6 @@
 package com.liao.spring.security.jwt.config;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +27,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private JwtTokenUtil jwtTokenUtil;
     @Resource
     private JwtUserDetailServiceImpl userDetailService;
-
+    @Resource
+    private RedisTemplate<String, Boolean> jwtRedisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -39,7 +41,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         // 最后 不管是否验证成功 都进行放行 进行后续的处理
 
         if (!StringUtils.isEmpty(token)) {
-            String userName = jwtTokenUtil.getUserNameFromToken(token);
+            // 从redis中验证是否存在该token 保证安全问题
+            Boolean status = jwtRedisTemplate.opsForValue().get(token);
+            String userName = null;
+            if (status != null && status) {
+                userName = jwtTokenUtil.getUserNameFromToken(token);
+            }
             // 判断用户名是否为空
             if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 

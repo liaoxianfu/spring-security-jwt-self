@@ -35,7 +35,7 @@ public class JwtUserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String key = this.getClass().getName() + "." + username;
+        String key = this.getClass().getName() + "." + new Exception().getStackTrace()[0].getMethodName() + "." + username;
         UserDetails details = redisTemplate.opsForValue().get(key);
         if (details != null) {
             log.info("使用缓存");
