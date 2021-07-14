@@ -22,7 +22,11 @@ jwt:
 server:
   port: 8000
 
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    com.liao.spring.security.jwt.mapper: debug # 让mybatis可以输出sql日志

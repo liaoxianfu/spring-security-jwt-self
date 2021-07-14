@@ -41,7 +41,8 @@ public class JwtRbacService {
                 // 判断以*结尾的url能够访问任意的数据
                 url -> {
                     log.info("获得的uri为{}", requestUri);
-                    if (url.endsWith("/*")) {
+                    String suffix = "/*";
+                    if (url.endsWith(suffix)) {
                         String replace = url.replace("/*", "");
                         return requestUri.startsWith(replace);
                     }

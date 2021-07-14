@@ -2,6 +2,7 @@ package com.liao.spring.security.jwt.config;
 
 
 import com.liao.spring.security.jwt.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import javax.annotation.Resource;
  * @since 2020/5/26 11:26
  */
 @RestController
+@Slf4j
 public class JwtController {
 
     @Resource
@@ -28,7 +30,10 @@ public class JwtController {
         }
         try {
             String token = jwtService.login(username, password);
-            return R.success().data("token", token);
+            String timeOut = System.currentTimeMillis() + jwtService.getExpirationTime() + "";
+            log.info("currentTime："+System.currentTimeMillis());
+            log.info("timeOut:  "+timeOut);
+            return R.success().data("token", token).data("timeOut", timeOut);
         } catch (UsernameNotFoundException e) {
             return R.error().data(e.getMessage());
         }
@@ -36,7 +41,12 @@ public class JwtController {
 
     @RequestMapping("/refresh")
     public R refreshTokenHandler(@RequestHeader("${jwt.header}") String oldToken) {
+        log.info("刷新令牌");
         String token = jwtService.refreshToken(oldToken);
-        return R.success().data("token", token);
+        String timeOut = System.currentTimeMillis() + jwtService.getExpirationTime() + "";
+        log.info("currentTime："+System.currentTimeMillis());
+        log.info("timeOut:  "+timeOut);
+        log.info("token   "+token);
+        return R.success().data("token", token).data("timeOut",timeOut);
     }
 }

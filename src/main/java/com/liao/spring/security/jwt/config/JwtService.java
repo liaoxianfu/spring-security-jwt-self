@@ -79,4 +79,8 @@ public class JwtService {
         redisTemplate.opsForValue().set(key, urls);
         return urls;
     }
+
+    public Long getExpirationTime() {
+        return jwtTokenUtil.getExpiration();
+    }
 }

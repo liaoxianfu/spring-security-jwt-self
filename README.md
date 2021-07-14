@@ -13,7 +13,7 @@
 默认提供了两用户 `admin` `demo` 密码均为`123456`
 
 使用postman进行测试
-![postman 测试](https://github.com/liaoxianfu/spring-security-jwt-self/blob/master/src/main/resources/img/login.png)
+![postman测试](https://github.com/liaoxianfu/spring-security-jwt-self/blob/master/src/main/resources/img/login.png)
 
 拿到token后，在每次请求的时候需要在header上携带
 jwt-token和 X-XSRF-TOKEN

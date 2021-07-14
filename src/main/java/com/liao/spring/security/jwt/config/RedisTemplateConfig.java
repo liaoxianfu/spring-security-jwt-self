@@ -12,15 +12,14 @@ import java.io.Serializable;
 /**
  * @author liao
  * @version 1.0.0
- * @Description  配置redis模板
  * @since 1.0.0
  * @since 2020/7/11 17:41
  */
 @Configuration
-public class RestTemplateConfig {
+public class RedisTemplateConfig {
     @Bean
-    public RedisTemplate redisCacheTemplate(LettuceConnectionFactory redisConnectionFactory) {
-        RedisTemplate template = new RedisTemplate<>();
+    public RedisTemplate redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         return template;
     }
